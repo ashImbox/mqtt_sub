@@ -6,24 +6,16 @@
     <title>MQTT Data Viewer - Device 4</title>
     <style>
         body { font-family: Arial, sans-serif; }
-        .device-section { margin: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .data { margin: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
         h2 { color: #333; }
-        .data { margin: 10px 0; }
     </style>
 </head>
 <body>
     <h1>MQTT Data Viewer - Device 4</h1>
 
-    <div class="device-section">
+    <div class="data">
         <h2>Device 4 Data</h2>
-        <div class="data">
-            <h3>Small Treatments: <span id="device4_smallTreatments">Waiting for data...</span></h3>
-            <h3>Medium Treatments: <span id="device4_mediumTreatments">Waiting for data...</span></h3>
-            <h3>Large Treatments: <span id="device4_largeTreatments">Waiting for data...</span></h3>
-            <h3>Status: <span id="device4_status">Waiting for data...</span></h3>
-            <h3>Wanted Number of Treatments: <span id="device4_wantedNrOfTreatments">Waiting for data...</span></h3>
-            <h3>Treatments Month: <span id="device4_treatmentsMonth">Waiting for data...</span></h3>
-        </div>
+        <h3>Small Treatments: <span id="device4_smallTreatments">Waiting for data...</span></h3>
     </div>
 
     <!-- JavaScript for MQTT -->
@@ -42,43 +34,22 @@
 
         client.on('connect', function () {
             console.log('Connected to MQTT broker');
-            // Subscribe to topics for Device 4
+            // Subscribe to a specific topic for Device 4
             client.subscribe('IMbox/sprayTest4/small', function (err) {
-                if (!err) console.log('Subscribed to IMbox/sprayTest4/small');
-            });
-            client.subscribe('IMbox/sprayTest4/medium', function (err) {
-                if (!err) console.log('Subscribed to IMbox/sprayTest4/medium');
-            });
-            client.subscribe('IMbox/sprayTest4/large', function (err) {
-                if (!err) console.log('Subscribed to IMbox/sprayTest4/large');
-            });
-            client.subscribe('IMbox/sprayTest4/status', function (err) {
-                if (!err) console.log('Subscribed to IMbox/sprayTest4/status');
-            });
-            client.subscribe('IMbox/sprayTest4/treatmentsWanted', function (err) {
-                if (!err) console.log('Subscribed to IMbox/sprayTest4/treatmentsWanted');
-            });
-            client.subscribe('IMbox/sprayTest4/treatmentsMonth', function (err) {
-                if (!err) console.log('Subscribed to IMbox/sprayTest4/treatmentsMonth');
+                if (!err) {
+                    console.log('Subscribed to IMbox/sprayTest4/small');
+                } else {
+                    console.error('Subscription error:', err);
+                }
             });
         });
 
         client.on('message', function (topic, message) {
-            const payload = message.toString();
             if (topic === 'IMbox/sprayTest4/small') {
+                const payload = message.toString();
                 document.getElementById('device4_smallTreatments').innerText = payload;
-            } else if (topic === 'IMbox/sprayTest4/medium') {
-                document.getElementById('device4_mediumTreatments').innerText = payload;
-            } else if (topic === 'IMbox/sprayTest4/large') {
-                document.getElementById('device4_largeTreatments').innerText = payload;
-            } else if (topic === 'IMbox/sprayTest4/status') {
-                document.getElementById('device4_status').innerText = payload;
-            } else if (topic === 'IMbox/sprayTest4/treatmentsWanted') {
-                document.getElementById('device4_wantedNrOfTreatments').innerText = payload;
-            } else if (topic === 'IMbox/sprayTest4/treatmentsMonth') {
-                document.getElementById('device4_treatmentsMonth').innerText = payload;
+                console.log(`Message received on ${topic}: ${payload}`);
             }
-            console.log(`Message received on ${topic}: ${payload}`);
         });
 
         client.on('error', function (error) {
