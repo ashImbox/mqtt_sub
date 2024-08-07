@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MQTT Data Viewer for Device 4</title>
+    <title>MQTT Data Viewer - Device 4</title>
     <style>
         body { font-family: Arial, sans-serif; }
         .device-section { margin: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
@@ -14,9 +14,8 @@
 <body>
     <h1>MQTT Data Viewer - Device 4</h1>
 
-    <!-- Device 4 -->
-    <div class="device-section" id="device4">
-        <h2>Device 4</h2>
+    <div class="device-section">
+        <h2>Device 4 Data</h2>
         <div class="data">
             <h3>Small Treatments: <span id="device4_smallTreatments">Waiting for data...</span></h3>
             <h3>Medium Treatments: <span id="device4_mediumTreatments">Waiting for data...</span></h3>
@@ -27,20 +26,45 @@
         </div>
     </div>
 
-    <!-- JavaScript til MQTT -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <!-- JavaScript for MQTT -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.2.6/mqtt.min.js"></script>
     <script>
         // MQTT broker details with WebSocket Secure connection
-        const broker = 'b535b330f042421fb1a4b023da4da656.s1.eu.hivemq.cloud';
-        const port = 8884; // Correct port for WSS
-        const clientId = 'clientId-' + Math.random().toString(16).substr(2, 8);
-        const client = new Paho.MQTT.Client(broker, port, '/mqtt', clientId);
+        const broker = 'wss://b535b330f042421fb1a4b023da4da656.s1.eu.hivemq.cloud:8884/mqtt';
+        const options = {
+            username: 'Ash_Imbox',
+            password: 'Pilo2022',
+            clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8)
+        };
 
-        client.onMessageArrived = function(message) {
-            console.log('Message arrived:', message.topic, message.payloadString);
-            const topic = message.topic;
-            const payload = message.payloadString;
+        // Create a client instance
+        const client = mqtt.connect(broker, options);
 
+        client.on('connect', function () {
+            console.log('Connected to MQTT broker');
+            // Subscribe to topics for Device 4
+            client.subscribe('IMbox/sprayTest4/small', function (err) {
+                if (!err) console.log('Subscribed to IMbox/sprayTest4/small');
+            });
+            client.subscribe('IMbox/sprayTest4/medium', function (err) {
+                if (!err) console.log('Subscribed to IMbox/sprayTest4/medium');
+            });
+            client.subscribe('IMbox/sprayTest4/large', function (err) {
+                if (!err) console.log('Subscribed to IMbox/sprayTest4/large');
+            });
+            client.subscribe('IMbox/sprayTest4/status', function (err) {
+                if (!err) console.log('Subscribed to IMbox/sprayTest4/status');
+            });
+            client.subscribe('IMbox/sprayTest4/treatmentsWanted', function (err) {
+                if (!err) console.log('Subscribed to IMbox/sprayTest4/treatmentsWanted');
+            });
+            client.subscribe('IMbox/sprayTest4/treatmentsMonth', function (err) {
+                if (!err) console.log('Subscribed to IMbox/sprayTest4/treatmentsMonth');
+            });
+        });
+
+        client.on('message', function (topic, message) {
+            const payload = message.toString();
             if (topic === 'IMbox/sprayTest4/small') {
                 document.getElementById('device4_smallTreatments').innerText = payload;
             } else if (topic === 'IMbox/sprayTest4/medium') {
@@ -54,26 +78,15 @@
             } else if (topic === 'IMbox/sprayTest4/treatmentsMonth') {
                 document.getElementById('device4_treatmentsMonth').innerText = payload;
             }
-        };
+            console.log(`Message received on ${topic}: ${payload}`);
+        });
 
-        client.onConnectionLost = function(responseObject) {
-            console.log('Connection lost:', responseObject.errorMessage);
-        };
+        client.on('error', function (error) {
+            console.error('Connection error:', error);
+        });
 
-        client.connect({
-            onSuccess: function() {
-                console.log('Connected to MQTT broker');
-                // Subscribe to topics for Device 4
-                client.subscribe('IMbox/sprayTest4/small');
-                client.subscribe('IMbox/sprayTest4/medium');
-                client.subscribe('IMbox/sprayTest4/large');
-                client.subscribe('IMbox/sprayTest4/status');
-                client.subscribe('IMbox/sprayTest4/treatmentsWanted');
-                client.subscribe('IMbox/sprayTest4/treatmentsMonth');
-            },
-            onFailure: function(error) {
-                console.log('Connection failed:', error);
-            }
+        client.on('close', function () {
+            console.log('Connection closed');
         });
     </script>
 </body>
