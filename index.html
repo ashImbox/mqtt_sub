@@ -71,7 +71,7 @@
     <script>
         // MQTT broker details with WebSocket connection
         const broker = 'test.mosquitto.org';
-        const port = 8080;
+        const port = 8883;
         const clientId = 'clientId-' + Math.random().toString(16).substr(2, 8);
         const client = new Paho.MQTT.Client(broker, port, '/mqtt', clientId);
 
