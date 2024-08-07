@@ -71,7 +71,7 @@
     <script>
         // MQTT broker details with WebSocket connection
         const broker = 'b535b330f042421fb1a4b023da4da656.s1.eu.hivemq.cloud';
-        const port = 8884; // Port for WebSocket connections
+        const port = 8884; // Secure WebSocket port for HiveMQ
         const clientId = 'clientId-' + Math.random().toString(16).substr(2, 8);
         const client = new Paho.MQTT.Client(broker, port, '/mqtt', clientId);
 
@@ -111,7 +111,8 @@
 
         client.connect({
             onSuccess: function() {
-                console.log('Connected to HiveMQ broker');
+                console.log('Connected to HiveMQ');
+                // Subscribe to topics for all devices
                 for (let i = 1; i <= 4; i++) {
                     client.subscribe(`IMbox/sprayTest${i}/small`);
                     client.subscribe(`IMbox/sprayTest${i}/medium`);
