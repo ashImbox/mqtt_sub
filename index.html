@@ -16,6 +16,12 @@
     <div class="data">
         <h2>Device 4 Data</h2>
         <h3>Small Treatments: <span id="device4_smallTreatments">Waiting for data...</span></h3>
+        <h3>Medium Treatments: <span id="device4_mediumTreatments">Waiting for data...</span></h3>
+        <h3>Large Treatments: <span id="device4_largeTreatments">Waiting for data...</span></h3>
+        <h3>Status: <span id="device4_status">Waiting for data...</span></h3>
+        <h3>Wanted Number of Treatments: <span id="device4_wantedNrOfTreatments">Waiting for data...</span></h3>
+        <h3>Reset: <span id="device4_reset">Waiting for data...</span></h3>
+        <h3>Treatments This Month: <span id="device4_treatmentsMonth">Waiting for data...</span></h3>
     </div>
 
     <!-- JavaScript for MQTT -->
@@ -34,10 +40,18 @@
 
         client.on('connect', function () {
             console.log('Connected to MQTT broker');
-            // Subscribe to a specific topic for Device 4
-            client.subscribe('IMbox/sprayTest4/small', function (err) {
+            // Subscribe to all topics for Device 4
+            client.subscribe([
+                'IMbox/sprayTest4/small',
+                'IMbox/sprayTest4/medium',
+                'IMbox/sprayTest4/large',
+                'IMbox/sprayTest4/status',
+                'IMbox/sprayTest4/treatmentsWanted',
+                'IMbox/sprayTest4/reset',
+                'IMbox/sprayTest4/treatmentsMonth'
+            ], function (err) {
                 if (!err) {
-                    console.log('Subscribed to IMbox/sprayTest4/small');
+                    console.log('Subscribed to all Device 4 topics');
                 } else {
                     console.error('Subscription error:', err);
                 }
@@ -45,11 +59,33 @@
         });
 
         client.on('message', function (topic, message) {
-            if (topic === 'IMbox/sprayTest4/small') {
-                const payload = message.toString();
-                document.getElementById('device4_smallTreatments').innerText = payload;
-                console.log(`Message received on ${topic}: ${payload}`);
+            const payload = message.toString();
+            switch (topic) {
+                case 'IMbox/sprayTest4/small':
+                    document.getElementById('device4_smallTreatments').innerText = payload;
+                    break;
+                case 'IMbox/sprayTest4/medium':
+                    document.getElementById('device4_mediumTreatments').innerText = payload;
+                    break;
+                case 'IMbox/sprayTest4/large':
+                    document.getElementById('device4_largeTreatments').innerText = payload;
+                    break;
+                case 'IMbox/sprayTest4/status':
+                    document.getElementById('device4_status').innerText = payload;
+                    break;
+                case 'IMbox/sprayTest4/treatmentsWanted':
+                    document.getElementById('device4_wantedNrOfTreatments').innerText = payload;
+                    break;
+                case 'IMbox/sprayTest4/reset':
+                    document.getElementById('device4_reset').innerText = payload;
+                    break;
+                case 'IMbox/sprayTest4/treatmentsMonth':
+                    document.getElementById('device4_treatmentsMonth').innerText = payload;
+                    break;
+                default:
+                    console.warn('Unknown topic:', topic);
             }
+            console.log(`Message received on ${topic}: ${payload}`);
         });
 
         client.on('error', function (error) {
