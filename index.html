@@ -69,19 +69,20 @@
     <!-- JavaScript til MQTT -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/mqttws31.min.js"></script>
     <script>
-        // MQTT broker details
+        // MQTT broker details with WebSocket connection
         const broker = 'test.mosquitto.org';
-        const port = 1883;
-        const client = new Paho.MQTT.Client(broker, port, 'clientId-' + Math.random());
+        const port = 8080;
+        const clientId = 'clientId-' + Math.random().toString(16).substr(2, 8);
+        const client = new Paho.MQTT.Client(broker, port, '/mqtt', clientId);
 
         client.onMessageArrived = function(message) {
+            console.log('Message arrived:', message.topic, message.payloadString);
             const topic = message.topic;
             const payload = message.payloadString;
-            const deviceId = topic.split('/')[2]; // Extract device ID from topic
+            const deviceId = topic.match(/IMbox\/sprayTest(\d+)\//)[1]; // Extract device ID from topic
             
             if (deviceId >= 1 && deviceId <= 4) {
-                switch (topic) 
-                {
+                switch (topic) {
                     case `IMbox/sprayTest${deviceId}/small`:
                         document.getElementById(`device${deviceId}_smallTreatments`).innerText = payload;
                         break;
@@ -104,25 +105,22 @@
             }
         };
 
-        client.onConnect = function() {
-            console.log('Connected to MQTT broker');
-            for (let i = 1; i <= 4; i++) {
-                client.subscribe(`IMbox/sprayTest${i}/small`);
-                client.subscribe(`IMbox/sprayTest${i}/medium`);
-                client.subscribe(`IMbox/sprayTest${i}/large`);
-                client.subscribe(`IMbox/sprayTest${i}/status`);
-                client.subscribe(`IMbox/sprayTest${i}/treatmentsWanted`);
-                client.subscribe(`IMbox/sprayTest${i}/reset`);
-                client.subscribe(`IMbox/sprayTest${i}/treatmentsMonth`);
-            }
-        };
-
         client.onConnectionLost = function(responseObject) {
             console.log('Connection lost:', responseObject.errorMessage);
         };
 
         client.connect({
-            onSuccess: client.onConnect,
+            onSuccess: function() {
+                console.log('Connected to MQTT broker');
+                for (let i = 1; i <= 4; i++) {
+                    client.subscribe(`IMbox/sprayTest${i}/small`);
+                    client.subscribe(`IMbox/sprayTest${i}/medium`);
+                    client.subscribe(`IMbox/sprayTest${i}/large`);
+                    client.subscribe(`IMbox/sprayTest${i}/status`);
+                    client.subscribe(`IMbox/sprayTest${i}/treatmentsWanted`);
+                    client.subscribe(`IMbox/sprayTest${i}/treatmentsMonth`);
+                }
+            },
             onFailure: function(error) {
                 console.log('Connection failed:', error);
             }
