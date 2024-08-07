@@ -6,57 +6,124 @@
     <title>MQTT Data Viewer</title>
     <style>
         body { font-family: Arial, sans-serif; }
-        .data { margin: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .device-section { margin: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
         h2 { color: #333; }
+        .data { margin: 10px 0; }
     </style>
 </head>
 <body>
     <h1>MQTT Data Viewer</h1>
 
-    <div class="data">
-        <h2>Test Topic Data:</h2>
-        <h3>Message: <span id="test_topic_message">Waiting for data...</span></h3>
+    <!-- Device 1 -->
+    <div class="device-section" id="device1">
+        <h2>Device 1</h2>
+        <div class="data">
+            <h3>Small Treatments: <span id="device1_smallTreatments">Waiting for data...</span></h3>
+            <h3>Medium Treatments: <span id="device1_mediumTreatments">Waiting for data...</span></h3>
+            <h3>Large Treatments: <span id="device1_largeTreatments">Waiting for data...</span></h3>
+            <h3>Status: <span id="device1_status">Waiting for data...</span></h3>
+            <h3>Wanted Number of Treatments: <span id="device1_wantedNrOfTreatments">Waiting for data...</span></h3>
+            <h3>Treatments Month: <span id="device1_treatmentsMonth">Waiting for data...</span></h3>
+        </div>
     </div>
 
-    <!-- JavaScript til MQTT -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.2.6/mqtt.min.js"></script>
+    <!-- Device 2 -->
+    <div class="device-section" id="device2">
+        <h2>Device 2</h2>
+        <div class="data">
+            <h3>Small Treatments: <span id="device2_smallTreatments">Waiting for data...</span></h3>
+            <h3>Medium Treatments: <span id="device2_mediumTreatments">Waiting for data...</span></h3>
+            <h3>Large Treatments: <span id="device2_largeTreatments">Waiting for data...</span></h3>
+            <h3>Status: <span id="device2_status">Waiting for data...</span></h3>
+            <h3>Wanted Number of Treatments: <span id="device2_wantedNrOfTreatments">Waiting for data...</span></h3>
+            <h3>Treatments Month: <span id="device2_treatmentsMonth">Waiting for data...</span></h3>
+        </div>
+    </div>
+
+    <!-- Device 3 -->
+    <div class="device-section" id="device3">
+        <h2>Device 3</h2>
+        <div class="data">
+            <h3>Small Treatments: <span id="device3_smallTreatments">Waiting for data...</span></h3>
+            <h3>Medium Treatments: <span id="device3_mediumTreatments">Waiting for data...</span></h3>
+            <h3>Large Treatments: <span id="device3_largeTreatments">Waiting for data...</span></h3>
+            <h3>Status: <span id="device3_status">Waiting for data...</span></h3>
+            <h3>Wanted Number of Treatments: <span id="device3_wantedNrOfTreatments">Waiting for data...</span></h3>
+            <h3>Treatments Month: <span id="device3_treatmentsMonth">Waiting for data...</span></h3>
+        </div>
+    </div>
+
+    <!-- Device 4 -->
+    <div class="device-section" id="device4">
+        <h2>Device 4</h2>
+        <div class="data">
+            <h3>Small Treatments: <span id="device4_smallTreatments">Waiting for data...</span></h3>
+            <h3>Medium Treatments: <span id="device4_mediumTreatments">Waiting for data...</span></h3>
+            <h3>Large Treatments: <span id="device4_largeTreatments">Waiting for data...</span></h3>
+            <h3>Status: <span id="device4_status">Waiting for data...</span></h3>
+            <h3>Wanted Number of Treatments: <span id="device4_wantedNrOfTreatments">Waiting for data...</span></h3>
+            <h3>Treatments Month: <span id="device4_treatmentsMonth">Waiting for data...</span></h3>
+        </div>
+    </div>
+
+    <!-- JavaScript for MQTT -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
     <script>
         // MQTT broker details with WebSocket connection
-        const broker = 'wss://b535b330f042421fb1a4b023da4da656.s1.eu.hivemq.cloud:8884/mqtt';
-        const options = {
-            username: 'Ash_Imbox',
-            password: 'Pilo2022',
-            clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8)
+        const broker = 'b535b330f042421fb1a4b023da4da656.s1.eu.hivemq.cloud';
+        const port = 8884; // Port for WebSocket connections
+        const clientId = 'clientId-' + Math.random().toString(16).substr(2, 8);
+        const client = new Paho.MQTT.Client(broker, port, '/mqtt', clientId);
+
+        client.onMessageArrived = function(message) {
+            console.log('Message arrived:', message.topic, message.payloadString);
+            const topic = message.topic;
+            const payload = message.payloadString;
+            const deviceId = topic.match(/IMbox\/sprayTest(\d+)\//)[1]; // Extract device ID from topic
+            
+            if (deviceId >= 1 && deviceId <= 4) {
+                switch (topic) {
+                    case `IMbox/sprayTest${deviceId}/small`:
+                        document.getElementById(`device${deviceId}_smallTreatments`).innerText = payload;
+                        break;
+                    case `IMbox/sprayTest${deviceId}/medium`:
+                        document.getElementById(`device${deviceId}_mediumTreatments`).innerText = payload;
+                        break;
+                    case `IMbox/sprayTest${deviceId}/large`:
+                        document.getElementById(`device${deviceId}_largeTreatments`).innerText = payload;
+                        break;
+                    case `IMbox/sprayTest${deviceId}/status`:
+                        document.getElementById(`device${deviceId}_status`).innerText = payload;
+                        break;
+                    case `IMbox/sprayTest${deviceId}/treatmentsWanted`:
+                        document.getElementById(`device${deviceId}_wantedNrOfTreatments`).innerText = payload;
+                        break;
+                    case `IMbox/sprayTest${deviceId}/treatmentsMonth`:
+                        document.getElementById(`device${deviceId}_treatmentsMonth`).innerText = payload;
+                        break;
+                }
+            }
         };
 
-        // Create a client instance
-        const client = mqtt.connect(broker, options);
+        client.onConnectionLost = function(responseObject) {
+            console.log('Connection lost:', responseObject.errorMessage);
+        };
 
-        client.on('connect', function () {
-            console.log('Connected to MQTT broker');
-            client.subscribe('test_topic', function (err) {
-                if (!err) {
-                    console.log('Subscribed to test_topic');
-                } else {
-                    console.error('Subscription error:', err);
+        client.connect({
+            onSuccess: function() {
+                console.log('Connected to HiveMQ broker');
+                for (let i = 1; i <= 4; i++) {
+                    client.subscribe(`IMbox/sprayTest${i}/small`);
+                    client.subscribe(`IMbox/sprayTest${i}/medium`);
+                    client.subscribe(`IMbox/sprayTest${i}/large`);
+                    client.subscribe(`IMbox/sprayTest${i}/status`);
+                    client.subscribe(`IMbox/sprayTest${i}/treatmentsWanted`);
+                    client.subscribe(`IMbox/sprayTest${i}/treatmentsMonth`);
                 }
-            });
-        });
-
-        client.on('message', function (topic, message) {
-            if (topic === 'test_topic') {
-                const payload = message.toString();
-                document.getElementById('test_topic_message').innerText = payload;
-                console.log(`Message received on ${topic}: ${payload}`);
+            },
+            onFailure: function(error) {
+                console.log('Connection failed:', error);
             }
-        });
-
-        client.on('error', function (error) {
-            console.error('Connection error:', error);
-        });
-
-        client.on('close', function () {
-            console.log('Connection closed');
         });
     </script>
 </body>
