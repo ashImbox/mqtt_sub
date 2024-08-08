@@ -5,56 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MQTT Data Viewer</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .data { margin: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .container { display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px; padding: 20px; }
+        .data { flex: 1; min-width: 300px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { text-align: center; margin: 20px 0; }
         h2 { color: #333; }
     </style>
 </head>
 <body>
     <h1>MQTT Data Viewer</h1>
+    <div class="container">
+        <!-- Device 1 Data -->
+        <div class="data">
+            <h2>Device 1 Data</h2>
+            <h3>Small Treatments: <span id="device1_smallTreatments">Waiting for data...</span></h3>
+            <h3>Medium Treatments: <span id="device1_mediumTreatments">Waiting for data...</span></h3>
+            <h3>Large Treatments: <span id="device1_largeTreatments">Waiting for data...</span></h3>
+            <h3>Status: <span id="device1_status">Waiting for data...</span></h3>
+            <h3>Wanted Number of Treatments: <span id="device1_wantedNrOfTreatments">Waiting for data...</span></h3>
+            <h3>Treatments pr Month: <span id="device1_treatmentsMonth">Waiting for data...</span></h3>
+        </div>
 
-    <!-- Device 1 Data -->
-    <div class="data">
-        <h2>Device 1 Data</h2>
-        <h3>Small Treatments: <span id="device1_smallTreatments">Waiting for data...</span></h3>
-        <h3>Medium Treatments: <span id="device1_mediumTreatments">Waiting for data...</span></h3>
-        <h3>Large Treatments: <span id="device1_largeTreatments">Waiting for data...</span></h3>
-        <h3>Status: <span id="device1_status">Waiting for data...</span></h3>
-        <h3>Wanted Number of Treatments: <span id="device1_wantedNrOfTreatments">Waiting for data...</span></h3>
-        <h3>Treatments pr Month: <span id="device1_treatmentsMonth">Waiting for data...</span></h3>
-    </div>
+        <!-- Device 2 Data -->
+        <div class="data">
+            <h2>Device 2 Data</h2>
+            <h3>Small Treatments: <span id="device2_smallTreatments">Waiting for data...</span></h3>
+            <h3>Medium Treatments: <span id="device2_mediumTreatments">Waiting for data...</span></h3>
+            <h3>Large Treatments: <span id="device2_largeTreatments">Waiting for data...</span></h3>
+            <h3>Status: <span id="device2_status">Waiting for data...</span></h3>
+            <h3>Wanted Number of Treatments: <span id="device2_wantedNrOfTreatments">Waiting for data...</span></h3>
+            <h3>Treatments pr Month: <span id="device2_treatmentsMonth">Waiting for data...</span></h3>
+        </div>
 
-    <!-- Device 2 Data -->
-    <div class="data">
-        <h2>Device 2 Data</h2>
-        <h3>Small Treatments: <span id="device2_smallTreatments">Waiting for data...</span></h3>
-        <h3>Medium Treatments: <span id="device2_mediumTreatments">Waiting for data...</span></h3>
-        <h3>Large Treatments: <span id="device2_largeTreatments">Waiting for data...</span></h3>
-        <h3>Status: <span id="device2_status">Waiting for data...</span></h3>
-        <h3>Wanted Number of Treatments: <span id="device2_wantedNrOfTreatments">Waiting for data...</span></h3>
-        <h3>Treatments pr Month: <span id="device2_treatmentsMonth">Waiting for data...</span></h3>
-    </div>
+        <!-- Device 3 Data -->
+        <div class="data">
+            <h2>Device 3 Data</h2>
+            <h3>Small Treatments: <span id="device3_smallTreatments">Waiting for data...</span></h3>
+            <h3>Medium Treatments: <span id="device3_mediumTreatments">Waiting for data...</span></h3>
+            <h3>Large Treatments: <span id="device3_largeTreatments">Waiting for data...</span></h3>
+            <h3>Status: <span id="device3_status">Waiting for data...</span></h3>
+            <h3>Wanted Number of Treatments: <span id="device3_wantedNrOfTreatments">Waiting for data...</span></h3>
+            <h3>Treatments pr Month: <span id="device3_treatmentsMonth">Waiting for data...</span></h3>
+        </div>
 
-    <!-- Device 3 Data -->
-    <div class="data">
-        <h2>Device 3 Data</h2>
-        <h3>Small Treatments: <span id="device3_smallTreatments">Waiting for data...</span></h3>
-        <h3>Medium Treatments: <span id="device3_mediumTreatments">Waiting for data...</span></h3>
-        <h3>Large Treatments: <span id="device3_largeTreatments">Waiting for data...</span></h3>
-        <h3>Status: <span id="device3_status">Waiting for data...</span></h3>
-        <h3>Wanted Number of Treatments: <span id="device3_wantedNrOfTreatments">Waiting for data...</span></h3>
-        <h3>Treatments pr Month: <span id="device3_treatmentsMonth">Waiting for data...</span></h3>
-    </div>
-
-    <!-- Device 4 Data -->
-    <div class="data">
-        <h2>Device 4 Data</h2>
-        <h3>Small Treatments: <span id="device4_smallTreatments">Waiting for data...</span></h3>
-        <h3>Medium Treatments: <span id="device4_mediumTreatments">Waiting for data...</span></h3>
-        <h3>Large Treatments: <span id="device4_largeTreatments">Waiting for data...</span></h3>
-        <h3>Status: <span id="device4_status">Waiting for data...</span></h3>
-        <h3>Wanted Number of Treatments: <span id="device4_wantedNrOfTreatments">Waiting for data...</span></h3>
-        <h3>Treatments pr Month: <span id="device4_treatmentsMonth">Waiting for data...</span></h3>
+        <!-- Device 4 Data -->
+        <div class="data">
+            <h2>Device 4 Data</h2>
+            <h3>Small Treatments: <span id="device4_smallTreatments">Waiting for data...</span></h3>
+            <h3>Medium Treatments: <span id="device4_mediumTreatments">Waiting for data...</span></h3>
+            <h3>Large Treatments: <span id="device4_largeTreatments">Waiting for data...</span></h3>
+            <h3>Status: <span id="device4_status">Waiting for data...</span></h3>
+            <h3>Wanted Number of Treatments: <span id="device4_wantedNrOfTreatments">Waiting for data...</span></h3>
+            <h3>Treatments pr Month: <span id="device4_treatmentsMonth">Waiting for data...</span></h3>
+        </div>
     </div>
 
     <!-- JavaScript for MQTT -->
