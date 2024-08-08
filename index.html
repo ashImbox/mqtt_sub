@@ -24,6 +24,7 @@
             <h3>Status: <span id="device1_status">Waiting for data...</span></h3>
             <h3>Wanted Number of Treatments: <span id="device1_wantedNrOfTreatments">Waiting for data...</span></h3>
             <h3>Treatments pr Month: <span id="device1_treatmentsMonth">Waiting for data...</span></h3>
+            <h3>Total Treatments: <span id="device1_totalTreatments">Waiting for data...</span></h3>
         </div>
 
         <!-- Device 2 Data -->
@@ -35,6 +36,7 @@
             <h3>Status: <span id="device2_status">Waiting for data...</span></h3>
             <h3>Wanted Number of Treatments: <span id="device2_wantedNrOfTreatments">Waiting for data...</span></h3>
             <h3>Treatments pr Month: <span id="device2_treatmentsMonth">Waiting for data...</span></h3>
+            <h3>Total Treatments: <span id="device2_totalTreatments">Waiting for data...</span></h3>
         </div>
 
         <!-- Device 3 Data -->
@@ -46,6 +48,7 @@
             <h3>Status: <span id="device3_status">Waiting for data...</span></h3>
             <h3>Wanted Number of Treatments: <span id="device3_wantedNrOfTreatments">Waiting for data...</span></h3>
             <h3>Treatments pr Month: <span id="device3_treatmentsMonth">Waiting for data...</span></h3>
+            <h3>Total Treatments: <span id="device3_totalTreatments">Waiting for data...</span></h3>
         </div>
 
         <!-- Device 4 Data -->
@@ -57,6 +60,7 @@
             <h3>Status: <span id="device4_status">Waiting for data...</span></h3>
             <h3>Wanted Number of Treatments: <span id="device4_wantedNrOfTreatments">Waiting for data...</span></h3>
             <h3>Treatments pr Month: <span id="device4_treatmentsMonth">Waiting for data...</span></h3>
+            <h3>Total Treatments: <span id="device4_totalTreatments">Waiting for data...</span></h3>
         </div>
     </div>
 
@@ -72,12 +76,23 @@
                         document.getElementById(`device${device}_${topic}`).innerText = savedData;
                     }
                 });
+                // Calculate and display total treatments after loading saved data
+                updateTotalTreatments(device);
             }
         }
 
         // Function to save data to localStorage
         function saveData(device, topic, payload) {
             localStorage.setItem(`device${device}_${topic}`, payload);
+        }
+
+        // Function to calculate and update total treatments
+        function updateTotalTreatments(device) {
+            const small = parseFloat(document.getElementById(`device${device}_smallTreatments`).innerText) || 0;
+            const medium = parseFloat(document.getElementById(`device${device}_mediumTreatments`).innerText) || 0;
+            const large = parseFloat(document.getElementById(`device${device}_largeTreatments`).innerText) || 0;
+            const total = small + medium + large;
+            document.getElementById(`device${device}_totalTreatments`).innerText = total;
         }
 
         // MQTT broker details with WebSocket Secure connection
@@ -137,47 +152,4 @@
 
         client.on('message', function (topic, message) {
             const payload = message.toString();
-            // Determine device number from topic
-            const deviceNumber = topic.split('/')[1].replace('sprayTest', '');
-            const topicName = topic.split('/')[2];
-            switch (topic) {
-                case `IMbox/sprayTest${deviceNumber}/small`:
-                    document.getElementById(`device${deviceNumber}_smallTreatments`).innerText = payload;
-                    saveData(deviceNumber, 'smallTreatments', payload);
-                    break;
-                case `IMbox/sprayTest${deviceNumber}/medium`:
-                    document.getElementById(`device${deviceNumber}_mediumTreatments`).innerText = payload;
-                    saveData(deviceNumber, 'mediumTreatments', payload);
-                    break;
-                case `IMbox/sprayTest${deviceNumber}/large`:
-                    document.getElementById(`device${deviceNumber}_largeTreatments`).innerText = payload;
-                    saveData(deviceNumber, 'largeTreatments', payload);
-                    break;
-                case `IMbox/sprayTest${deviceNumber}/status`:
-                    document.getElementById(`device${deviceNumber}_status`).innerText = payload;
-                    saveData(deviceNumber, 'status', payload);
-                    break;
-                case `IMbox/sprayTest${deviceNumber}/treatmentsWanted`:
-                    document.getElementById(`device${deviceNumber}_wantedNrOfTreatments`).innerText = payload;
-                    saveData(deviceNumber, 'wantedNrOfTreatments', payload);
-                    break;
-                case `IMbox/sprayTest${deviceNumber}/treatmentsMonth`:
-                    document.getElementById(`device${deviceNumber}_treatmentsMonth`).innerText = payload;
-                    saveData(deviceNumber, 'treatmentsMonth', payload);
-                    break;
-                default:
-                    console.warn('Unknown topic:', topic);
-            }
-            console.log(`Message received on ${topic}: ${payload}`);
-        });
-
-        client.on('error', function (error) {
-            console.error('Connection error:', error);
-        });
-
-        client.on('close', function () {
-            console.log('Connection closed');
-        });
-    </script>
-</body>
-</html>
+            // Determine device
