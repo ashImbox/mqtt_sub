@@ -152,4 +152,49 @@
 
         client.on('message', function (topic, message) {
             const payload = message.toString();
-            // Determine device
+            // Determine device number from topic
+            const deviceNumber = topic.split('/')[1].replace('sprayTest', '');
+            const topicName = topic.split('/')[2];
+            switch (topic) {
+                case `IMbox/sprayTest${deviceNumber}/small`:
+                    document.getElementById(`device${deviceNumber}_smallTreatments`).innerText = payload;
+                    saveData(deviceNumber, 'smallTreatments', payload);
+                    break;
+                case `IMbox/sprayTest${deviceNumber}/medium`:
+                    document.getElementById(`device${deviceNumber}_mediumTreatments`).innerText = payload;
+                    saveData(deviceNumber, 'mediumTreatments', payload);
+                    break;
+                case `IMbox/sprayTest${deviceNumber}/large`:
+                    document.getElementById(`device${deviceNumber}_largeTreatments`).innerText = payload;
+                    saveData(deviceNumber, 'largeTreatments', payload);
+                    break;
+                case `IMbox/sprayTest${deviceNumber}/status`:
+                    document.getElementById(`device${deviceNumber}_status`).innerText = payload;
+                    saveData(deviceNumber, 'status', payload);
+                    break;
+                case `IMbox/sprayTest${deviceNumber}/treatmentsWanted`:
+                    document.getElementById(`device${deviceNumber}_wantedNrOfTreatments`).innerText = payload;
+                    saveData(deviceNumber, 'wantedNrOfTreatments', payload);
+                    break;
+                case `IMbox/sprayTest${deviceNumber}/treatmentsMonth`:
+                    document.getElementById(`device${deviceNumber}_treatmentsMonth`).innerText = payload;
+                    saveData(deviceNumber, 'treatmentsMonth', payload);
+                    break;
+                default:
+                    console.warn('Unknown topic:', topic);
+            }
+            // Update total treatments after updating individual treatments
+            updateTotalTreatments(deviceNumber);
+            console.log(`Message received on ${topic}: ${payload}`);
+        });
+
+        client.on('error', function (error) {
+            console.error('Connection error:', error);
+        });
+
+        client.on('close', function () {
+            console.log('Connection closed');
+        });
+    </script>
+</body>
+</html>
